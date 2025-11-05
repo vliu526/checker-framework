@@ -267,7 +267,7 @@ public class SignednessAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
 
   @Override
   protected TreeAnnotator createTreeAnnotator() {
-    return new ListTreeAnnotator(new SignednessTreeAnnotator(this), super.createTreeAnnotator());
+    return new ListTreeAnnotator(super.createTreeAnnotator(), new SignednessTreeAnnotator(this));
   }
 
   @Override
@@ -315,11 +315,16 @@ public class SignednessAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
         case AND:
         case OR:
         case XOR:
-          // For bitwise operations, if at least one operand is @BitPattern, the result is @BitPattern
+          // For bitwise operations, if at least one operand is @BitPattern, the result is
+          // @BitPattern. This must run after propagation, so we override any LUB that was computed.
           AnnotatedTypeMirror leftType = getAnnotatedType(tree.getLeftOperand());
           AnnotatedTypeMirror rightType = getAnnotatedType(tree.getRightOperand());
+          // Check both primary and effective annotations to catch @BitPattern in all cases
           if (leftType.hasPrimaryAnnotation(BitPattern.class)
-              || rightType.hasPrimaryAnnotation(BitPattern.class)) {
+              || rightType.hasPrimaryAnnotation(BitPattern.class)
+              || leftType.hasEffectiveAnnotation(BitPattern.class)
+              || rightType.hasEffectiveAnnotation(BitPattern.class)) {
+            // Always replace to ensure @BitPattern is set, overriding any LUB from propagation
             type.replaceAnnotation(BIT_PATTERN);
           }
           break;

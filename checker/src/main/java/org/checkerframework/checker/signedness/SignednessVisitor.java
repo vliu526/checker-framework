@@ -103,7 +103,7 @@ public class SignednessVisitor extends BaseTypeVisitor<SignednessAnnotatedTypeFa
             }
             break;
           }
-          // fall through for arithmetic plus
+        // fall through for arithmetic plus
         case MINUS:
         case MULTIPLY:
         case DIVIDE:
@@ -323,7 +323,7 @@ public class SignednessVisitor extends BaseTypeVisitor<SignednessAnnotatedTypeFa
             }
             break;
           }
-          // fall through for arithmetic plus
+        // fall through for arithmetic plus
         case MINUS_ASSIGNMENT:
         case MULTIPLY_ASSIGNMENT:
         case DIVIDE_ASSIGNMENT:
@@ -335,6 +335,8 @@ public class SignednessVisitor extends BaseTypeVisitor<SignednessAnnotatedTypeFa
                 kindWithoutAssignment(kind),
                 varType,
                 exprType);
+            // Return early to avoid base class assignment checks
+            return null;
           } else if (hasBitPatternAnnotation(exprType)) {
             checker.reportError(
                 expr,
@@ -342,6 +344,8 @@ public class SignednessVisitor extends BaseTypeVisitor<SignednessAnnotatedTypeFa
                 kindWithoutAssignment(kind),
                 varType,
                 exprType);
+            // Return early to avoid base class assignment checks
+            return null;
           }
           break;
         case LEFT_SHIFT_ASSIGNMENT:
@@ -362,6 +366,8 @@ public class SignednessVisitor extends BaseTypeVisitor<SignednessAnnotatedTypeFa
                   kindWithoutAssignment(kind),
                   varType,
                   exprType);
+              // Return early to avoid base class assignment checks
+              return null;
             } else {
               checker.reportError(
                   expr,
@@ -369,6 +375,8 @@ public class SignednessVisitor extends BaseTypeVisitor<SignednessAnnotatedTypeFa
                   kindWithoutAssignment(kind),
                   varType,
                   exprType);
+              // Return early to avoid base class assignment checks
+              return null;
             }
           }
           break;
@@ -458,8 +466,8 @@ public class SignednessVisitor extends BaseTypeVisitor<SignednessAnnotatedTypeFa
    * Enforces the following rules on unary operations involving @BitPattern types:
    *
    * <ul>
-   *   <li>Do not allow arithmetic operations ({@code ++}, {@code --}, {@code +}, {@code -}) on
-   *       @BitPattern values.
+   *   <li>Do not allow arithmetic operations ({@code ++}, {@code --}, {@code +}, {@code -})
+   *       on @BitPattern values.
    *   <li>Allow bitwise complement ({@code ~}) on @BitPattern values.
    * </ul>
    */
@@ -477,7 +485,8 @@ public class SignednessVisitor extends BaseTypeVisitor<SignednessAnnotatedTypeFa
         case UNARY_PLUS:
         case UNARY_MINUS:
           checker.reportError(tree.getExpression(), "unary.bitpattern", exprType);
-          break;
+          // Return early to avoid base class assignment checks
+          return null;
         case BITWISE_COMPLEMENT:
           // Bitwise complement is allowed on @BitPattern values
           break;
