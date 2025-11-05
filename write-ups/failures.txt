@@ -1,0 +1,35 @@
+What Did Not Work Well When Using LLM Support
+
+1. Detailed Error Messages
+   - Initial test runs didn't show detailed compiler error messages by default
+   - Had to use -Pemit.test.debug flag to get more information, but output was extremely verbose
+   - The error message "error: (argument)" was too generic - didn't show the full type mismatch details
+   - Difficulty extracting just the relevant error information from massive debug output
+
+2. Manual Compiler Invocation
+   - Attempted to run the checker manually with javac but encountered missing jar file errors
+   - The checker/bin/javac wrapper requires specific classpath setup that wasn't immediately clear
+   - Stub file path specification (-Astubs) may need additional configuration
+   - Couldn't easily reproduce the exact test environment for detailed debugging
+
+3. Incomplete Diagnosis
+   - While identified the symptom (line 18 fails), couldn't complete root cause analysis
+   - Unclear why bitwise OR with constant (masked | 1L) doesn't preserve @BitPattern annotation
+   - The TreeAnnotator code suggests it should work, but something is preventing proper annotation inference
+   - Need deeper understanding of annotation type checking order and when TreeAnnotator runs
+
+4. Test Framework Complexity
+   - The test framework uses complex classpaths with many dependencies
+   - Understanding the exact test execution flow required significant investigation
+   - Hard to isolate just the failing test without running the entire test suite
+
+5. Limited Debugging Capabilities
+   - Couldn't easily add print statements or breakpoints to understand flow
+   - No way to inspect intermediate annotation states during type checking
+   - Would benefit from more detailed error messages showing annotation propagation
+
+6. Documentation Gaps
+   - Some aspects of the checker framework require deep knowledge that wasn't immediately accessible
+   - Understanding when TreeAnnotator runs vs. when visitor checks occur needed code inspection
+   - The relationship between effective annotations and primary annotations wasn't clear
+

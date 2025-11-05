@@ -1,0 +1,30 @@
+What Worked Well When Using LLM Support
+
+1. Test Execution and Diagnosis
+   - Successfully navigated the Checker Framework test structure
+   - Identified the specific failing test: BitPatternOperations.java
+   - Located the exact error: unexpected diagnostic at line 18
+   - Understood the test framework's expected vs. actual diagnostics validation
+
+2. Codebase Exploration
+   - Effectively used semantic search to understand how signedness checker tests are structured
+   - Found relevant test infrastructure files (SignednessTest.java, test README)
+   - Located the checker implementation code (SignednessAnnotatedTypeFactory, SignednessVisitor)
+   - Identified the stub file (BitPatternStub.astub) that defines expected method signatures
+
+3. Tool Usage
+   - Successfully ran Gradle test tasks with appropriate flags
+   - Used grep to find specific patterns in the codebase
+   - Read multiple files in parallel to understand context
+   - Navigated complex build system and test infrastructure
+
+4. Problem Understanding
+   - Correctly identified that the issue is with bitwise OR operation (masked | 1L) not preserving @BitPattern annotation
+   - Understood that the checker should infer @BitPattern when one operand has it
+   - Recognized that the error is about argument type checking for method calls
+
+5. Context Gathering
+   - Found how the checker handles bitwise operations in SignednessAnnotatedTypeFactory
+   - Located the visitor code that validates operations on @BitPattern types
+   - Understood the relationship between test files and stub files
+
